@@ -38,5 +38,10 @@ namespace MVI4Unity.Sample
         {
             UIWinMgr.Ins.Open<State01 , Reducer01> (UIContent.Ins.tipContainer , Window01Static.root);
         }
+
+        public void OpenWindowRole()
+        {
+            UIWinMgr.Ins.Open<RoleItemCountState, RoleReducer>(UIContent.Ins.tipContainer, WindowRoleStatic.root);
+        }
     }
 }

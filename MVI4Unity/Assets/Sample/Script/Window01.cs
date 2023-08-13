@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,6 +31,9 @@ namespace MVI4Unity.Sample
 
         [AWindowCom ("btnClose")]
         public Button btnClose;
+
+        [AWindowCom("TestText")]
+        public TextMeshPro text;
     }
 
     /// <summary>
@@ -151,6 +155,8 @@ namespace MVI4Unity.Sample
                 {
                     //由Func01引起的变化
                 }
+
+                window.text.text = state.count.ToString();
 
                 window.btn.onClick.AddListener (() => { store.DisPatch (Reducer01.Reducer01MethodType.Func01 , default); });
                 window.btn2.onClick.AddListener (() => { store.DisPatch (Reducer01.Reducer01MethodType.Func02 , default); });
