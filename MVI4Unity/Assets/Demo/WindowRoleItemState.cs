@@ -3,8 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace MVI4Unity
 {
-    public class RoleItemCountState :AStateBase
+    public enum FunctionNode
+    { 
+        Root,
+        InventroyNode
+    }
+
+    public class RoleAStateBase : AStateBase
     {
+        public  FunctionNode stateNode = FunctionNode.InventroyNode;
+
+    }
+
+
+
+    public class RoleItemCountState : RoleAStateBase
+    {
+      public   RoleItemCountState()
+        {
+            stateNode = FunctionNode.InventroyNode; ;
+        }
+
         private int attack;
         public int Attack
         {
@@ -46,21 +65,35 @@ namespace MVI4Unity
             set { count = Count; }
         }
 
-        public List<RoleItem> roleItems; 
+        public int itemCount = 40;
+        public int unLockitemCount = 20;
+        public List<ItemInfo> itemList = new List<ItemInfo>(40);
+
     }
 
-    public class Item
+    public class ContentContainerState : RoleAStateBase
     {
-        public string name;
-        public int iconIndex;
+
+       /* public int itemCount=40;
+        public int unLockitemCount=20;
+        public List<ItemInfo> itemList=new List<ItemInfo>();
+  */
+    }
+    /// <summary>
+    /// 此处的ItemInfo理解成该槽位的信息
+    /// </summary>
+    public class ItemInfo
+    {
+        public int position;
+        public string iconName;
         public int count;
+       public bool isUnlock;
     }
 
-    public class RoleItem
+    public class ItemState: RoleAStateBase
     {
-        public Item item;
-        public int inventoryIndex;
-
+        public ItemInfo itemInfo;
+        public int position;
     }
 }
 

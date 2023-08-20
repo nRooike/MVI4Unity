@@ -26,10 +26,10 @@ namespace MVI4Unity
         public Transform itemContain;
 
         [AWindowCom("hDBtn")]
-        public Button healthDBtn;
+        public Button addDBtn;
 
         [AWindowCom("hABtn")]
-        public Button healthABtn;
+        public Button ReduceABtn;
 
         [AWindowCom("atttributeBtn")]
         public Button attributeBtn;
@@ -37,10 +37,9 @@ namespace MVI4Unity
 
     public class WindowItem : AWindow
     {
-        [AWindowCom("imageItem")]
-        public Image bkImg;
 
-        [AWindowCom("childItem")]
+
+        [AWindowCom("content")]
         public Transform childTra;
     }
 
@@ -52,6 +51,70 @@ namespace MVI4Unity
 
     public class WindowRoleStatic
     {
+        public static WindowNodeType<WindowChildItem, ItemState> itemNode = new WindowNodeType<WindowChildItem, ItemState>(
+            "Item",
+            fillProps: (state, window, store, prop) => {
+                RoleItemCountState state1 = state as RoleItemCountState;
+                if (state1 != null)
+                {
+                    if (state1.itemInfo.isUnlock)
+                    {
+                        Sprite sprite = Resources.Load<Sprite>("UnlockIcon");
+                    }
+                    else
+                    {
+                        Sprite sprite = Resources.Load<Sprite>(state.itemInfo.iconName);
+                        window.itemImg.sprite = sprite;
+                    }
+
+                }
+              
+            }
+            );
+
+
+        public static WindowNodeType<WindowItem, ContentContainerState, ItemInfo> contenCantainer = new WindowNodeType<WindowItem, ContentContainerState, ItemInfo>(
+            "ContentCantainer",
+           containerCreator: (window) =>
+           {
+               List<Transform> containerList = PoolMgr.Ins.GetList<Transform>().Pop();
+               containerList.Add(window.childTra);
+               return containerList;
+           },
+            childNodeCreator: (state) =>
+            {
+                RoleItemCountState roleItemCountState = state as RoleItemCountState;
+                if (roleItemCountState == null)
+                {
+                    Debug.Log("the state is null");
+                    return null;
+                }
+                /*f (state != null)
+                {*/
+                 List<List<WindowNode>> childNodeGroup = PoolMgr.Ins.GetList<List<WindowNode>>().Pop();
+                    List<WindowNode> childNodeList1 = PoolMgr.Ins.GetList<WindowNode>().Pop();
+
+                 //   List<ItemInfo> itemList = state.itemList;
+             /*       for (int i = 0; i < itemList.Count; i++)
+                  {
+                        childNodeList1.Add(WindowRoleStatic.itemNode.CreateWindowNode(state, itemList[i]));
+                   }*/
+
+                    for (int i = 0; i < roleItemCountState.itemCount; i++)
+                        //       {
+                        childNodeList1.Add(WindowRoleStatic.itemNode.CreateWindowNode(state));
+                    ////   }
+                    childNodeGroup.Add(childNodeList1);
+            //    }      
+                    return childNodeGroup;
+ 
+             
+            },
+              fillProps: (state, window, store, prop) =>
+              {
+            
+              }
+            );
         public static WindowNodeType<WindowRole, RoleItemCountState> root = new WindowNodeType<WindowRole, RoleItemCountState>(
             "Inventory Panel",
             containerCreator:(window)=>
@@ -64,22 +127,21 @@ namespace MVI4Unity
                 List<List<WindowNode>> childNodeGroup = PoolMgr.Ins.GetList<List<WindowNode>>().Pop();
                 List<WindowNode> childNodeList1 = PoolMgr.Ins.GetList<WindowNode>().Pop();
 
-                for (int i = 0; i < state.Count; i++)
-                {
-                    childNodeList1.Add(item.CreateWindowNode(state));
-                }
+                 childNodeList1.Add(contenCantainer.CreateWindowNode(state));
+               
 
                 childNodeGroup.Add(childNodeList1);
                 return childNodeGroup;
             },
             fillProps: (state, window, store, prop) => {
-                window.attckTxt.text = state.Attack.ToString();
-                window.defenseTxt.text = state.Defense.ToString();
-                window.healthTxt.text = state.Health.ToString();
+                RoleItemCountState state1 = state as RoleItemCountState;
+                window.attckTxt.text = state1.Attack.ToString();
+                window.defenseTxt.text = state1.Defense.ToString();
+                window.healthTxt.text = state1.Health.ToString();
 
-                window.healthDBtn.onClick.AddListener(() => { store.DisPatch(RoleReducer.RoleducerMethodType.Func01, default); });
-                window.healthABtn.onClick.AddListener(() => { store.DisPatch(RoleReducer.RoleducerMethodType.Func02, default); });
-                window.attributeBtn.onClick.AddListener(() => { store.DisPatch(RoleReducer.RoleducerMethodType.Func03, default);  });
+                window.addDBtn.onClick.AddListener(() => { store.DisPatch(RoleReducer.RoleducerMethodType.AddItem, new ItemChange("Test01",1)); });
+                window.ReduceABtn.onClick.AddListener(() => { store.DisPatch(RoleReducer.RoleducerMethodType.ReduceItem, default); });
+           
             }
             );
         public static WindowNodeType<WindowItem, RoleItemCountState> item = new WindowNodeType<WindowItem, RoleItemCountState>("WindownItem",

@@ -138,11 +138,11 @@ namespace MVI4Unity.Sample
                 List<WindowNode> childNodeList2 = PoolMgr.Ins.GetList<WindowNode> ().Pop ();
 
                 //给这2个容器添加子节点
-                for ( int i = 0 ; i < state.count ; i++ )
+              /*  for ( int i = 0 ; i < state.count ; i++ )
                 {
                     childNodeList1.Add (item.CreateWindowNode (state));
                     childNodeList2.Add (item.CreateWindowNode (state));
-                }
+                }*/
 
                 childNodeGroup.Add (childNodeList1);
                 childNodeGroup.Add (childNodeList2);
@@ -156,7 +156,7 @@ namespace MVI4Unity.Sample
                     //由Func01引起的变化
                 }
 
-                window.text.text = state.count.ToString();
+             //   window.text.text = state.count.ToString();
 
                 window.btn.onClick.AddListener (() => { store.DisPatch (Reducer01.Reducer01MethodType.Func01 , default); });
                 window.btn2.onClick.AddListener (() => { store.DisPatch (Reducer01.Reducer01MethodType.Func02 , default); });

@@ -12,8 +12,7 @@ public class test : MonoBehaviour
     delegate void TestDelegate();
     private void Start()
     {
-       Delegate my= Delegate.CreateDelegate(typeof(TestDelegate), typeof(MyTest).GetMethod("TestStatci"));
-        my.DynamicInvoke();
+             
     }
 }
 

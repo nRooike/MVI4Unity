@@ -84,6 +84,7 @@ namespace MVI4Unity
         void ResolveDispute (S state , WindowNodeType component)
         {
             List<WindowNode> newNodeList = PoolMgr.Ins.GetList<WindowNode> ().Pop (); //从池里获取一个列表
+
             WindowNode node = state.shouldDestroy ? default : _rootNodeContainerData.data != null ? component.GetRoot (state , _rootNodeContainerData.data) : component.GetRoot (state);
             newNodeList.Add (node);
             WindowNodeDisputeResolver.Ins.ResolveDispute4List (GameObject.transform , state , _store , _currentNodes , newNodeList);
