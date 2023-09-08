@@ -163,11 +163,11 @@ namespace MVI4Unity
     {
         public P prop;
 
-        public override void FillProps (AWindow window , AStateBase state , IStore store)
+        public override void FillProps(AWindow window, AStateBase state, IStore store)
         {
             if ( windowNodeType is WindowNodeType<A , S , P> realWindowNodeType )
             {
-                realWindowNodeType.FillProps (window , state , store , prop);
+                realWindowNodeType.FillProps (window , state as S, store , prop);
                 return;
             }
             base.FillProps (window , state , store);

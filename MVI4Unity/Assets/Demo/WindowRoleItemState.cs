@@ -64,20 +64,20 @@ namespace MVI4Unity
             get { return count; }
             set { count = Count; }
         }
-
         public int itemCount = 40;
         public int unLockitemCount = 20;
-        public List<ItemInfo> itemList = new List<ItemInfo>(40);
+        public List<ItemInfo> itemList = new List<ItemInfo>();
+
 
     }
 
     public class ContentContainerState : RoleAStateBase
     {
 
-       /* public int itemCount=40;
+        public int itemCount=40;
         public int unLockitemCount=20;
         public List<ItemInfo> itemList=new List<ItemInfo>();
-  */
+  
     }
     /// <summary>
     /// 此处的ItemInfo理解成该槽位的信息

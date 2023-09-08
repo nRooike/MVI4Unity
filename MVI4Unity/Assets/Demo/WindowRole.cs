@@ -51,29 +51,27 @@ namespace MVI4Unity
 
     public class WindowRoleStatic
     {
-        public static WindowNodeType<WindowChildItem, ItemState> itemNode = new WindowNodeType<WindowChildItem, ItemState>(
+        public static WindowNodeType<WindowChildItem, ItemState, ItemInfo> itemNode = new WindowNodeType<WindowChildItem, ItemState, ItemInfo>(
             "Item",
             fillProps: (state, window, store, prop) => {
-                RoleItemCountState state1 = state as RoleItemCountState;
-                if (state1 != null)
-                {
-                    if (state1.itemInfo.isUnlock)
+              
+                    if (!prop.isUnlock)
                     {
                         Sprite sprite = Resources.Load<Sprite>("UnlockIcon");
                     }
                     else
                     {
-                        Sprite sprite = Resources.Load<Sprite>(state.itemInfo.iconName);
-                        window.itemImg.sprite = sprite;
+                        if (prop.iconName != null)
+                        {
+                            Sprite sprite = Resources.Load<Sprite>(prop.iconName);
+                            window.itemImg.sprite = sprite;
+                        }                      
                     }
-
-                }
-              
             }
             );
 
 
-        public static WindowNodeType<WindowItem, ContentContainerState, ItemInfo> contenCantainer = new WindowNodeType<WindowItem, ContentContainerState, ItemInfo>(
+        public static RoleItemCantainerType<WindowItem, ContentContainerState, ItemInfo> contenCantainer = new RoleItemCantainerType<WindowItem, ContentContainerState, ItemInfo>(
             "ContentCantainer",
            containerCreator: (window) =>
            {
@@ -83,27 +81,26 @@ namespace MVI4Unity
            },
             childNodeCreator: (state) =>
             {
-                RoleItemCountState roleItemCountState = state as RoleItemCountState;
-                if (roleItemCountState == null)
-                {
-                    Debug.Log("the state is null");
-                    return null;
-                }
+              
                 /*f (state != null)
                 {*/
                  List<List<WindowNode>> childNodeGroup = PoolMgr.Ins.GetList<List<WindowNode>>().Pop();
                     List<WindowNode> childNodeList1 = PoolMgr.Ins.GetList<WindowNode>().Pop();
 
-                 //   List<ItemInfo> itemList = state.itemList;
-             /*       for (int i = 0; i < itemList.Count; i++)
-                  {
-                        childNodeList1.Add(WindowRoleStatic.itemNode.CreateWindowNode(state, itemList[i]));
-                   }*/
-
-                    for (int i = 0; i < roleItemCountState.itemCount; i++)
-                        //       {
-                        childNodeList1.Add(WindowRoleStatic.itemNode.CreateWindowNode(state));
-                    ////   }
+                //   
+                /*       for (int i = 0; i < itemList.Count; i++)
+                     {
+                           childNodeList1.Add(WindowRoleStatic.itemNode.CreateWindowNode(state, itemList[i]));
+                      }*/
+                List<ItemInfo> itemList = state.itemList;
+                for (int i = 0; i < state.itemCount; i++)
+                    {
+                       ItemState windowChildItem = new ItemState();
+                        windowChildItem.itemInfo = itemList[i];
+                        
+                        
+                        childNodeList1.Add(WindowRoleStatic.itemNode.CreateWindowNode(windowChildItem, windowChildItem.itemInfo));
+                   }
                     childNodeGroup.Add(childNodeList1);
             //    }      
                     return childNodeGroup;
@@ -127,7 +124,14 @@ namespace MVI4Unity
                 List<List<WindowNode>> childNodeGroup = PoolMgr.Ins.GetList<List<WindowNode>>().Pop();
                 List<WindowNode> childNodeList1 = PoolMgr.Ins.GetList<WindowNode>().Pop();
 
-                 childNodeList1.Add(contenCantainer.CreateWindowNode(state));
+                ContentContainerState containerState = new ContentContainerState();
+
+                containerState.itemList = state.itemList;
+                containerState.itemCount = state.itemCount;
+                containerState.unLockitemCount = state.unLockitemCount;
+
+
+                 childNodeList1.Add(contenCantainer.CreateWindowNode(containerState));
                
 
                 childNodeGroup.Add(childNodeList1);

@@ -85,8 +85,8 @@ namespace MVI4Unity
         protected readonly string windowAssetPath;
         protected readonly PoolType<A> windowPool;
         protected readonly Func<A , List<Transform>> containerCreator;
-        protected readonly Func<AStateBase, List<List<WindowNode>>> childNodeCreator;
-        protected readonly Action<AStateBase, A , IStore , P> fillProps;
+        protected readonly Func<S, List<List<WindowNode>>> childNodeCreator;
+        protected readonly Action<S, A , IStore , P> fillProps;
 
         /// <summary>
         /// 构造节点信息
@@ -98,9 +98,9 @@ namespace MVI4Unity
         /// <param name="windowPool"></param>
         public WindowNodeType (
             string windowAssetPath ,
-            Action<AStateBase, A , IStore , P> fillProps ,
+            Action<S, A , IStore , P> fillProps ,
             Func<A , List<Transform>> containerCreator = default ,
-            Func<AStateBase, List<List<WindowNode>>> childNodeCreator = default ,
+            Func<S, List<List<WindowNode>>> childNodeCreator = default ,
             PoolType<A> windowPool = null)
         {
             this.windowAssetPath = windowAssetPath;
@@ -135,7 +135,7 @@ namespace MVI4Unity
             node.prop = param;
             node.SetWindowNodeType (this);
             node.childNodeGroup.Clear ();
-            node.childNodeGroup.AddRange (childNodeCreator == null ? PoolMgr.Ins.GetList<List<WindowNode>> ().Pop () : childNodeCreator.Invoke (state ));
+            node.childNodeGroup.AddRange (childNodeCreator == null ? PoolMgr.Ins.GetList<List<WindowNode>> ().Pop () : childNodeCreator.Invoke (state as S));
             return node;
         }
 
@@ -154,7 +154,7 @@ namespace MVI4Unity
             fillProps?.Invoke (state as S , window as A , store , default);
         }
 
-        public void FillProps (AWindow window , AStateBase state , IStore store , P @param)
+        public void FillProps (AWindow window , S state , IStore store , P @param)
         {
             window.RemoveAllListeners ();
             fillProps?.Invoke (state, window as A , store , param);
@@ -174,9 +174,9 @@ namespace MVI4Unity
     public class WindowNodeType<A, S> : WindowNodeType<A , S , int> where A : AWindow where S : AStateBase
     {
         public WindowNodeType (string windowAssetPath ,
-            Action<AStateBase, A , IStore , int> fillProps ,
+            Action<S, A , IStore , int> fillProps ,
             Func<A , List<Transform>> containerCreator = null ,
-            Func<AStateBase, List<List<WindowNode>>> childNodeCreator = null ,
+            Func<S, List<List<WindowNode>>> childNodeCreator = null ,
             PoolType<A> windowPool = null) : base (windowAssetPath , fillProps , containerCreator , childNodeCreator , windowPool)
         {
 

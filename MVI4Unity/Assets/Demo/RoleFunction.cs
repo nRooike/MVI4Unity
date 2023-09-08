@@ -58,6 +58,7 @@ namespace MVI4Unity
                         if (itemList[i].iconName.Equals(changeItem.propName))
                         {
                             itemList[i].count += changeItem.count;
+                            itemList[i].isUnlock = true;
                             return oldState;
                         }
                     }
@@ -70,7 +71,7 @@ namespace MVI4Unity
                     if(itemList[i].iconName==null)
                     {
                         itemInfo = itemList[i];
-                        continue;
+                        break; 
                     }
 
                 }
